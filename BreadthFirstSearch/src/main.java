@@ -19,7 +19,7 @@ class Position {
     }
 
 
-    
+
     public void down()
     {
         y = y+1;
@@ -47,6 +47,7 @@ class Shape {
     Position relativePosition = new Position(x, y);
 
     ArrayList<Position> innerPieceList = new ArrayList<Position>();
+
 }
 
 //this is a node in the graph
@@ -55,6 +56,11 @@ class GameState {
     GameState prev;
 
     Position[] state;
+
+    GameState()
+    {
+
+    }
 
     GameState(GameState _prev) {
         prev = _prev;
@@ -113,7 +119,37 @@ class Board
     }
 }
 
+class GameStateComparator implements Comparator<GameState> {
+
+    public int compare(GameState a, GameState b)
+    {
+        for(int i = 0; i < a.state.length; i ++)
+        {
+            if(a.state[i].x < b.state[i].x || a.state[i].y < b.state[i].y)
+                return -1;
+            else if(a.state[i].x > b.state[i].x || a.state[i].y > b.state[i].y)
+                return 1;
+        }
+        return 0;
+
+    }
+
+}
+
 class Main {
+
+    static boolean applyOffset(Shape shape, GameState gameState)
+    {
+        Position position = shape.innerPieceList.get(0);
+        if(position.toString().equals(gameState.state[0].toString()))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     public static void main(String args[]) {
 
@@ -129,8 +165,8 @@ class Main {
         Board board = new Board();
         board.initializeBoard();
         board.printBoard();
-
         ArrayList<Shape> shapeList = new ArrayList<>();
+
 
         //generate the shapes initial positions
         Position tempPosition;
@@ -243,16 +279,6 @@ class Main {
         ten.innerPieceList.add(tempPosition);
         shapeList.add(ten);
 
-        ArrayList<Position> finalInnerPieceListforZero = new ArrayList<>();
-        tempPosition = new Position(5, 1);
-        finalInnerPieceListforZero.add(tempPosition);
-        tempPosition = new Position(6, 1);
-        finalInnerPieceListforZero.add(tempPosition);
-        tempPosition = new Position(5, 2);
-        finalInnerPieceListforZero.add(tempPosition);
-        tempPosition = new Position(6, 2);
-        finalInnerPieceListforZero.add(tempPosition);
-
 
 
         GameState nullgameState = new GameState(null);
@@ -271,44 +297,62 @@ class Main {
             throw new RuntimeException("initial string is wrong");
         }
 
-        //treeset with comparator to track valid states : seenIt
-//        Hashtable<GameState,String> hSet = new Hashtable<GameState,String>();
+        GameStateComparator gameStateComparator = new GameStateComparator();
+        TreeSet<GameState> seenIt= new TreeSet<>(gameStateComparator);
         Queue<GameState> todo = new LinkedList<>(); //FIFO counter
 
         todo.add(initialGameState);
-//        hSet.put(initialGameState,  initialGameState.printState());
 
+        //push initial state onto the stack
         System.out.println("Push: " + initialGameState.printState());
 
+        GameState finalState = new GameState();
+
+        //while the queue is empty:
         while(!todo.isEmpty())
         {
-            //the moment you find a valid state put it in seenIt
-            //level, frontier GameState
-            // ssss
+
+            //applyoffset(pass in a Position)
+
+            GameState _prev = todo.poll();
+            GameState currentLevel = new GameState(_prev);
+
+            //check if current level is the goal
+            if(applyOffset(shapeList.get(0), _prev))
+            {
+                break;
+            }
+
+            //apply base case and generate nodes
+            if(!seenIt.contains(currentLevel))
+            {
+                for (Shape shape : shapeList)
+                {
+                    for(Position position : shape.innerPieceList)
+                    {
+                        position.
+                    }
+                }
+            }
 
 
+            //if seenIt.contains(currentlevel) move on
+            //if(currentLevel hasn't been seen) seenIt.add(currentLevel)
+            //operate on currentLevel
+
+            //keep list of stored states and check
+            //check if we have seen before and check if it is illegal
+
+            finalState = currentLevel;
         }
 
-//        while(!todo.isEmpty())
-//        {
-//
-//            todo.remove();
-//
-//            System.out.println("Pop: " + initialGameState.printState());
-//
-//            String zeroPosition = shapeList.get(0).innerPieceList.get(0).toString();
-//            System.out.println();
-//            if(zeroPosition.equals("(5,1)"))
-//            {
-//                System.out.println("DONE!");
-//                break;
-//            }
-//            else
-//            {
-//
-//                GameState currentGameState = initialGameState;
-//            }
-//        }
+        while(finalState.prev != null)
+        {
+            System.out.println(finalState.printState());
+            finalState = finalState.prev;
+        }
+
+
     }
 }
 
