@@ -18,6 +18,8 @@ class Position {
         return "(" + String.valueOf(x) + "," + String.valueOf(y) +  ")";
     }
 
+
+    
     public void down()
     {
         y = y+1;
