@@ -18,15 +18,15 @@ public class Board
 //    int innerPieceY = shapeList.get(i).innerPieceList.get(j).getY();
 //    int currentLevelOffsetY = positions.get(i).getY();
 
-    public boolean validateBoard(ArrayList<Position> positions)
+    public boolean validateBoard(Position[] positions)
     {
         this.wipeBoard();
-        for (int i = 0; i < positions.size(); i++) {
+        for (int i = 0; i < positions.length; i++) {
 
             int x;
             int y;
-            int posX = positions.get(i).getX();
-            int posY  = positions.get(i).getY();
+            int posX = positions[i].getX();
+            int posY  = positions[i].getY();
 
                 for (int j = 0; j < shapeList.get(i).innerPieceList.size(); j++) {
 

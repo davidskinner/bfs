@@ -45,7 +45,7 @@ class GameState {
 
     GameState prev;
 
-    ArrayList<Position> state = new ArrayList<>();
+    Position[] state = new Position[11];
 
     GameState()
     {
@@ -56,15 +56,15 @@ class GameState {
 
 
         prev = _prev;
-        state = new ArrayList<>();
+        state = new Position[11];
         for (int i = 0; i < 11; i++) {
-            Position tempPosition = new Position(_prev.state.get(i).x,_prev.state.get(i).y);
-            state.add(tempPosition);
+            Position tempPosition = new Position(_prev.state[i].x,_prev.state[i].y);
+            state[i] = tempPosition;
         }
 
     }
 
-    public void setState(ArrayList<Position> currentState)
+    public void setState(Position[] currentState)
     {
         state = currentState;
     }
@@ -90,11 +90,11 @@ class GameStateComparator implements Comparator<GameState> {
 
     public int compare(GameState a, GameState b)
     {
-        for(int i = 0; i < a.state.size(); i ++)
+        for(int i = 0; i < a.state.length; i ++)
         {
-            if(a.state.get(i).x < b.state.get(i).x || a.state.get(i).y < b.state.get(i).y)
+            if(a.state[i].x < b.state[i].x || a.state[i].y < b.state[i].y)
                 return -1;
-            else if(a.state.get(i).x > b.state.get(i).x || a.state.get(i).y > b.state.get(i).y)
+            else if(a.state[i].x > b.state[i].x || a.state[i].y > b.state[i].y)
                 return 1;
         }
         return 0;
@@ -107,7 +107,7 @@ class Main {
     static boolean applyOffset(Position position)
     {
 //        return position.x == 4 && position.y == -2;
-        return position.x == 4 && position.y == -1;
+        return position.x == 4 && position.y == 0;
     }
 
     static void log(String message)
@@ -134,9 +134,9 @@ class Main {
 
         GameState initialGameState = new GameState();
 
-        ArrayList<Position> tempPosition = new ArrayList<>();
+        Position[] tempPosition = new Position[11];
         for (int i = 0; i < 11; i++) {
-             tempPosition.add(new Position(0,0));
+             tempPosition[i] = (new Position(0,0));
         }
 
         //get state of every shape to start with
@@ -169,17 +169,17 @@ class Main {
 
 
             //check if current level is the goal
-            if(applyOffset(currentLevel.state.get(0)))
+            if(applyOffset(currentLevel.state[0]))
             {
                 currentLevel.printState();
                 break;
             }
 
             //            System.out.println("plusX");
-            for (int i = 0; i < currentLevel.state.size(); i++) {
+            for (int i = 0; i < currentLevel.state.length; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state.get(i).x += 1;
+                tempGamestate.state[i].x += 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -189,10 +189,10 @@ class Main {
 
             }
 
-            for (int i = 0; i < currentLevel.state.size(); i++) {
+            for (int i = 0; i < currentLevel.state.length; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state.get(i).x -= 1;
+                tempGamestate.state[i].x -= 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -205,10 +205,10 @@ class Main {
 
 
 //            System.out.println("plusY");
-            for (int i = 0; i < currentLevel.state.size(); i++) {
+            for (int i = 0; i < currentLevel.state.length; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state.get(i).y += 1;
+                tempGamestate.state[i].y += 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -218,10 +218,10 @@ class Main {
                 }
             }
 
-            for (int i = 0; i < currentLevel.state.size(); i++) {
+            for (int i = 0; i < currentLevel.state.length; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state.get(i).y -= 1;
+                tempGamestate.state[i].y -= 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
