@@ -4,16 +4,16 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 class Position {
-    int x;
-    int y;
+    byte x;
+    byte y;
 
     Position() {
 
     }
 
     Position(int xd, int yd) {
-        x = xd;
-        y = yd;
+        x = (byte)xd;
+        y = (byte)yd;
     }
 
     @Override
@@ -32,8 +32,8 @@ class Position {
 }
 
 class Shape {
-    int x = 0;
-    int y = 0;
+    byte x = 0;
+    byte y = 0;
     Position relativePosition = new Position(x, y);
 
     ArrayList<Position> innerPieceList = new ArrayList<Position>();
@@ -110,6 +110,11 @@ class Main {
         return position.x == 4 && position.y == -2;
     }
 
+    static void log(String message)
+    {
+//       System.out.println(message);
+    }
+
     public static void main(String args[]) {
 
         final String initialString = "(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)";
@@ -158,7 +163,7 @@ class Main {
         while(!todo.isEmpty())
         {
             currentLevel = todo.poll();
-//            System.out.println("Pop:" + currentLevel.printState());
+            log("Pop:" + currentLevel.printState());
 
 
             //check if current level is the goal
@@ -177,7 +182,7 @@ class Main {
                     {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
-//                        System.out.println("Push:" + tempGamestate.printState());
+                        log("Push:" + tempGamestate.printState());
                 }
 
             }
@@ -190,6 +195,7 @@ class Main {
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
+                    log("Push:" + tempGamestate.printState());
 
                 }
             }
@@ -203,6 +209,7 @@ class Main {
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
+                    log("Push:" + tempGamestate.printState());
 
                 }
             }
@@ -215,8 +222,11 @@ class Main {
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
+                    log("Push:" + tempGamestate.printState());
+
                 }
             }
+            seenIt.add(currentLevel);
         }
 
         //todo : flip around
