@@ -1,3 +1,6 @@
+import javafx.geometry.Pos;
+
+import java.lang.reflect.Array;
 import java.util.*;
 
 class Position {
@@ -18,27 +21,14 @@ class Position {
         return "(" + String.valueOf(x) + "," + String.valueOf(y) +  ")";
     }
 
-
-
-    public void down()
-    {
-        y = y+1;
+    public int getX() {
+        return x;
     }
 
-    public void up()
-    {
-        y = y-1;
+    public int getY() {
+        return y;
     }
 
-    public void right()
-    {
-        x = x+1;
-    }
-
-    public void left()
-    {
-        x = x-1;
-    }
 }
 
 class Shape {
@@ -55,7 +45,7 @@ class GameState {
 
     GameState prev;
 
-    Position[] state;
+    ArrayList<Position> state = new ArrayList<>();
 
     GameState()
     {
@@ -63,11 +53,18 @@ class GameState {
     }
 
     GameState(GameState _prev) {
+
+
         prev = _prev;
-        state = new Position[11];
+        state = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            Position tempPosition = new Position(_prev.state.get(i).x,_prev.state.get(i).y);
+            state.add(tempPosition);
+        }
+
     }
 
-    public void setState(Position[] currentState)
+    public void setState(ArrayList<Position> currentState)
     {
         state = currentState;
     }
@@ -75,59 +72,29 @@ class GameState {
     public String printState()
     {
         String tempString = "";
-        for (int i = 0; i < state.length; i++) {
-            tempString = tempString + state[i].toString();
+        for (Position aState : state) {
+            tempString = tempString + aState.toString();
         }
         return tempString;
     }
 }
 
-class Board
+
+
+enum Direction
 {
-    static boolean board[][] = new boolean[10][10];
-
-    public void initializeBoard()
-    {
-        //place in true fields
-        board[3][1] = true;
-        board[4][1] = true;
-        board[3][2] = true;
-        board[4][2] = true;
-        board[2][2] = true;
-        board[3][3] = true;
-        board[7][2] = true;
-        board[7][3] = true;
-        board[7][4] = true;
-        board[8][3] = true;
-        board[8][4] = true;
-        board[2][7] = true;
-    }
-
-    public void printBoard()
-    {
-        for (int i = 0; i < 10 ; i++) {
-            for (int j = 0; j <10 ; j++) {
-                if(board[j][i])
-                System.out.print("O ");
-                else
-                {
-                    System.out.print("# ");
-                }
-            }
-            System.out.println("");
-        }
-    }
+    up,down,left,right
 }
 
 class GameStateComparator implements Comparator<GameState> {
 
     public int compare(GameState a, GameState b)
     {
-        for(int i = 0; i < a.state.length; i ++)
+        for(int i = 0; i < a.state.size(); i ++)
         {
-            if(a.state[i].x < b.state[i].x || a.state[i].y < b.state[i].y)
+            if(a.state.get(i).x < b.state.get(i).x || a.state.get(i).y < b.state.get(i).y)
                 return -1;
-            else if(a.state[i].x > b.state[i].x || a.state[i].y > b.state[i].y)
+            else if(a.state.get(i).x > b.state.get(i).x || a.state.get(i).y > b.state.get(i).y)
                 return 1;
         }
         return 0;
@@ -138,17 +105,9 @@ class GameStateComparator implements Comparator<GameState> {
 
 class Main {
 
-    static boolean applyOffset(Shape shape, GameState gameState)
+    static boolean applyOffset(Position position)
     {
-        Position position = shape.innerPieceList.get(0);
-        if(position.toString().equals(gameState.state[0].toString()))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return position.x == 4 && position.y == -2;
     }
 
     public static void main(String args[]) {
@@ -163,137 +122,23 @@ class Main {
         }
 
         Board board = new Board();
-        board.initializeBoard();
+        board.wipeBoard();
+        board.initializeShapes();
         board.printBoard();
-        ArrayList<Shape> shapeList = new ArrayList<>();
 
+        GameState initialGameState = new GameState();
 
-        //generate the shapes initial positions
-        Position tempPosition;
-        Shape zero = new Shape();
-        tempPosition = new Position(1, 3);
-        zero.innerPieceList.add(tempPosition);
-        tempPosition = new Position(2, 3);
-        zero.innerPieceList.add(tempPosition);
-        tempPosition = new Position(1, 4);
-        zero.innerPieceList.add(tempPosition);
-        tempPosition = new Position(2, 4);
-        zero.innerPieceList.add(tempPosition);
-        shapeList.add(zero);
-
-        Shape one = new Shape();
-        tempPosition = new Position(1, 5);
-        one.innerPieceList.add(tempPosition);
-        tempPosition = new Position(1, 6);
-        one.innerPieceList.add(tempPosition);
-        tempPosition = new Position(2, 6);
-        one.innerPieceList.add(tempPosition);
-        shapeList.add(one);
-
-
-        Shape two = new Shape();
-        tempPosition = new Position(2, 5);
-        two.innerPieceList.add(tempPosition);
-        tempPosition = new Position(3, 5);
-        two.innerPieceList.add(tempPosition);
-        tempPosition = new Position(3, 6);
-        two.innerPieceList.add(tempPosition);
-        shapeList.add(two);
-
-
-        Shape three = new Shape();
-        tempPosition = new Position(3, 7);
-        three.innerPieceList.add(tempPosition);
-        tempPosition = new Position(3, 8);
-        three.innerPieceList.add(tempPosition);
-        tempPosition = new Position(4, 8);
-        three.innerPieceList.add(tempPosition);
-        shapeList.add(three);
-
-
-        Shape four = new Shape();
-        tempPosition = new Position(4, 7);
-        four.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 7);
-        four.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 7);
-        four.innerPieceList.add(tempPosition);
-        shapeList.add(four);
-
-
-        Shape five = new Shape();
-        tempPosition = new Position(6, 7);
-        five.innerPieceList.add(tempPosition);
-        tempPosition = new Position(7, 7);
-        five.innerPieceList.add(tempPosition);
-        tempPosition = new Position(6, 8);
-        five.innerPieceList.add(tempPosition);
-        shapeList.add(five);
-
-        Shape six = new Shape();
-        tempPosition = new Position(5, 4);
-        six.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 5);
-        six.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 6);
-        six.innerPieceList.add(tempPosition);
-        tempPosition = new Position(4, 5);
-        six.innerPieceList.add(tempPosition);
-        shapeList.add(six);
-
-        Shape seven = new Shape();
-        tempPosition = new Position(6, 4);
-        seven.innerPieceList.add(tempPosition);
-        tempPosition = new Position(6, 5);
-        seven.innerPieceList.add(tempPosition);
-        tempPosition = new Position(6, 6);
-        seven.innerPieceList.add(tempPosition);
-        tempPosition = new Position(7, 5);
-        seven.innerPieceList.add(tempPosition);
-        shapeList.add(seven);
-
-        Shape eight = new Shape();
-        tempPosition = new Position(8, 5);
-        eight.innerPieceList.add(tempPosition);
-        tempPosition = new Position(8, 6);
-        eight.innerPieceList.add(tempPosition);
-        tempPosition = new Position(7, 6);
-        eight.innerPieceList.add(tempPosition);
-        shapeList.add(eight);
-
-        Shape nine = new Shape();
-        tempPosition = new Position(6, 2);
-        nine.innerPieceList.add(tempPosition);
-        tempPosition = new Position(6, 3);
-        nine.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 3);
-        nine.innerPieceList.add(tempPosition);
-        shapeList.add(nine);
-
-        Shape ten = new Shape();
-        tempPosition = new Position(5, 1);
-        ten.innerPieceList.add(tempPosition);
-        tempPosition = new Position(6, 1);
-        ten.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 2);
-        ten.innerPieceList.add(tempPosition);
-        shapeList.add(ten);
-
-
-
-        GameState nullgameState = new GameState(null);
-        GameState initialGameState = new GameState(nullgameState);
-
-        //get state of every shape to start with
-        Position[] temprPosition = new Position[11];
-
-        for (int i = 0; i < shapeList.size(); i++) {
-            temprPosition[i] = shapeList.get(i).relativePosition;
+        ArrayList<Position> tempPosition = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+             tempPosition.add(new Position(0,0));
         }
 
-        initialGameState.setState(temprPosition);
+        //get state of every shape to start with
+        initialGameState.setState(tempPosition);
 
         if (!initialGameState.printState().equals(initialString)) {
+            System.out.println(initialGameState.printState());
+            System.out.println(initialString);
             throw new RuntimeException("initial string is wrong");
         }
 
@@ -306,50 +151,75 @@ class Main {
         //push initial state onto the stack
         System.out.println("Push: " + initialGameState.printState());
 
-        GameState finalState = new GameState();
+        GameState currentLevel = new GameState();
 
         //while the queue is empty:
         while(!todo.isEmpty())
         {
-
-            //applyoffset(pass in a Position)
-
-            GameState _prev = todo.poll();
-            GameState currentLevel = new GameState(_prev);
+            currentLevel = todo.poll();
 
             //check if current level is the goal
-            if(applyOffset(shapeList.get(0), _prev))
+            if(applyOffset(currentLevel.state.get(0)))
             {
+                currentLevel.printState();
                 break;
             }
 
-            //apply base case and generate nodes
-            if(!seenIt.contains(currentLevel))
-            {
-                for (Shape shape : shapeList)
-                {
-                    for(Position position : shape.innerPieceList)
+            System.out.println("plusx");
+            for (int i = 0; i < currentLevel.state.size(); i++) {
+
+                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate.state.get(i).x += 1;
+                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                     {
-                        position.
-                    }
+                    System.out.println(tempGamestate.printState());
+                    todo.add(tempGamestate);
+                    seenIt.add(tempGamestate);
+                }
+
+            }
+
+            for (int i = 0; i < currentLevel.state.size(); i++) {
+
+                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate.state.get(i).x -= 1;
+                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                {
+                    System.out.println(tempGamestate.printState());
+                    todo.add(tempGamestate);
+                    seenIt.add(tempGamestate);
                 }
             }
 
+            System.out.println("plusy");
+            for (int i = 0; i < currentLevel.state.size(); i++) {
 
-            //if seenIt.contains(currentlevel) move on
-            //if(currentLevel hasn't been seen) seenIt.add(currentLevel)
-            //operate on currentLevel
+                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate.state.get(i).y += 1;
+                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                {
+                    todo.add(tempGamestate);
+                    seenIt.add(tempGamestate);
+                }
+            }
 
-            //keep list of stored states and check
-            //check if we have seen before and check if it is illegal
+            for (int i = 0; i < currentLevel.state.size(); i++) {
 
-            finalState = currentLevel;
+                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate.state.get(i).y -= 1;
+                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                {
+                    todo.add(tempGamestate);
+                    seenIt.add(tempGamestate);
+                }
+            }
         }
 
-        while(finalState.prev != null)
+        //todo : flip around
+        while(currentLevel.prev != null)
         {
-            System.out.println(finalState.printState());
-            finalState = finalState.prev;
+            System.out.println(currentLevel.printState());
+            currentLevel = currentLevel.prev;
         }
 
 
