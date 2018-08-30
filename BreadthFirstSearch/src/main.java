@@ -100,14 +100,14 @@ class GameStateComparator implements Comparator<GameState> {
         return 0;
 
     }
-
 }
 
 class Main {
 
     static boolean applyOffset(Position position)
     {
-        return position.x == 4 && position.y == -2;
+//        return position.x == 4 && position.y == -2;
+        return position.x == 4 && position.y == -1;
     }
 
     static void log(String message)
@@ -153,6 +153,8 @@ class Main {
         Queue<GameState> todo = new LinkedList<>(); //FIFO counter
 
         todo.add(initialGameState);
+        log("Push:" + initialGameState.printState());
+
 
         //push initial state onto the stack
 //        System.out.println("Push: " + initialGameState.printState());
@@ -173,16 +175,16 @@ class Main {
                 break;
             }
 
-//            System.out.println("plusX");
+            //            System.out.println("plusX");
             for (int i = 0; i < currentLevel.state.size(); i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
                 tempGamestate.state.get(i).x += 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
-                    {
+                {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
-                        log("Push:" + tempGamestate.printState());
+                    log("Push:" + tempGamestate.printState());
                 }
 
             }
@@ -199,6 +201,8 @@ class Main {
 
                 }
             }
+
+
 
 //            System.out.println("plusY");
             for (int i = 0; i < currentLevel.state.size(); i++) {
@@ -227,16 +231,29 @@ class Main {
                 }
             }
             seenIt.add(currentLevel);
+
+            log(String.valueOf(seenIt.size()));
         }
 
-        //todo : flip around
+
+        LinkedList<GameState> temp = new LinkedList<>();
+        temp.add(currentLevel);
         while(currentLevel.prev != null)
         {
-            System.out.println(currentLevel.printState());
+//            System.out.println(currentLevel.printState());
             currentLevel = currentLevel.prev;
+            temp.add(currentLevel);
+
         }
 
+        Iterator x = temp.descendingIterator();
 
+        while(x.hasNext())
+        {
+            GameState element = (GameState)x.next();
+            System.out.println(element.printState());
+
+        }
     }
 }
 

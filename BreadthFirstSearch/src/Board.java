@@ -23,8 +23,8 @@ public class Board
         this.wipeBoard();
         for (int i = 0; i < positions.size(); i++) {
 
-            int x = 0;
-            int y = 0;
+            int x;
+            int y;
             int posX = positions.get(i).getX();
             int posY  = positions.get(i).getY();
 
@@ -33,15 +33,14 @@ public class Board
                     x = shapeList.get(i).innerPieceList.get(j).getX();
                     y = shapeList.get(i).innerPieceList.get(j).getY();
 
-
                     if(this.boardState[ x + posX ][ y + posY ])
                     {
 //                        printBoard();
                         return false;
+
                     }
                     else{
                         this.boardState[x + posX][ y + posY] = true;
-//                        printBoard();
                     }
                 }
             }
