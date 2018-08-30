@@ -20,20 +20,28 @@ public class Board
 
     public boolean validateBoard(ArrayList<Position> positions)
     {
+        this.wipeBoard();
         for (int i = 0; i < positions.size(); i++) {
+
+            int x = 0;
+            int y = 0;
+            int posX = positions.get(i).getX();
+            int posY  = positions.get(i).getY();
 
                 for (int j = 0; j < shapeList.get(i).innerPieceList.size(); j++) {
 
+                    x = shapeList.get(i).innerPieceList.get(j).getX();
+                    y = shapeList.get(i).innerPieceList.get(j).getY();
 
 
-                    if(this.boardState[shapeList.get(i).innerPieceList.get(j).getX() + positions.get(i).getX()][ shapeList.get(i).innerPieceList.get(j).getY() + positions.get(i).getY()])
+                    if(this.boardState[ x + posX ][ y + posY ])
                     {
-//                        this.wipeBoard();
-                        this.printBoard();
+//                        printBoard();
                         return false;
                     }
                     else{
-                        this.boardState[shapeList.get(i).innerPieceList.get(j).getX() + positions.get(i).getX()][ shapeList.get(i).innerPieceList.get(j).getY() + positions.get(i).getY()] = true;
+                        this.boardState[x + posX][ y + posY] = true;
+//                        printBoard();
                     }
                 }
             }
@@ -46,10 +54,10 @@ public class Board
         for (int i = 0; i < 10 ; i++) {
             for (int j = 0; j <10 ; j++) {
                 if(boardState[j][i])
-                    System.out.print("= ");
+                    System.out.print("T ");
                 else
                 {
-                    System.out.print("O ");
+                    System.out.print("@ ");
                 }
             }
             System.out.println("");
@@ -143,7 +151,7 @@ public class Board
         four.innerPieceList.add(tempPosition);
         tempPosition = new Position(5, 7);
         four.innerPieceList.add(tempPosition);
-        tempPosition = new Position(5, 7);
+        tempPosition = new Position(5, 8);
         four.innerPieceList.add(tempPosition);
         tempShape.add(four);
 

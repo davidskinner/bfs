@@ -126,6 +126,7 @@ class Main {
         board.initializeShapes();
         board.printBoard();
 
+
         GameState initialGameState = new GameState();
 
         ArrayList<Position> tempPosition = new ArrayList<>();
@@ -149,7 +150,7 @@ class Main {
         todo.add(initialGameState);
 
         //push initial state onto the stack
-        System.out.println("Push: " + initialGameState.printState());
+//        System.out.println("Push: " + initialGameState.printState());
 
         GameState currentLevel = new GameState();
 
@@ -157,6 +158,8 @@ class Main {
         while(!todo.isEmpty())
         {
             currentLevel = todo.poll();
+//            System.out.println("Pop:" + currentLevel.printState());
+
 
             //check if current level is the goal
             if(applyOffset(currentLevel.state.get(0)))
@@ -165,16 +168,16 @@ class Main {
                 break;
             }
 
-            System.out.println("plusx");
+//            System.out.println("plusX");
             for (int i = 0; i < currentLevel.state.size(); i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
                 tempGamestate.state.get(i).x += 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                     {
-                    System.out.println(tempGamestate.printState());
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
+//                        System.out.println("Push:" + tempGamestate.printState());
                 }
 
             }
@@ -185,13 +188,13 @@ class Main {
                 tempGamestate.state.get(i).x -= 1;
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
-                    System.out.println(tempGamestate.printState());
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
+
                 }
             }
 
-            System.out.println("plusy");
+//            System.out.println("plusY");
             for (int i = 0; i < currentLevel.state.size(); i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
@@ -200,6 +203,7 @@ class Main {
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
+
                 }
             }
 
