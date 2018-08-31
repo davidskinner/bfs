@@ -98,7 +98,7 @@ class GameState {
 
         prev = _prev;
         state = new byte[22];
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 22; i++) {
             byte tempPosition;
             tempPosition = _prev.state[i];
             state[i] = tempPosition;
@@ -176,7 +176,7 @@ class Main {
 
         {
             int q =0;
-            for (int i = 0; i < 22;i++) {
+            for (int i = 0; i < 11;i++) {
                 for (int j = 0; j <2; j++) {
                     temp[q] = twoD[i][j];
                             q++;
@@ -190,12 +190,12 @@ class Main {
     static boolean applyOffset(byte[] position)
     {
 //        return position.x == 4 && position.y == -2;
-        return position[0] == 2 && position[1] == 1;
+        return position[0] == 4 && position[1] == 0;
     }
 
     static void log(String message)
     {
-       System.out.println(message);
+//       System.out.println(message);
     }
 
     public static void main(String args[]) {
@@ -247,7 +247,6 @@ class Main {
         //while the queue is empty:
         while(!todo.isEmpty())
         {
-            xDirection = false;
             currentLevel = todo.poll();
             log("Pop:" + currentLevel.printState());
 
@@ -260,12 +259,13 @@ class Main {
 
             byte[][] currentStateTwoD = makeXy(currentLevel.state);
 
-            for (int i = 0; i < currentStateTwoD.length; i++) {
+            for (int i = 0; i < 11; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
                 byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
                 tempGamestateTwoD[i][0] += 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
+
                 if(board.validateBoard(tempGamestate.state ) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -278,9 +278,9 @@ class Main {
 
                 GameState tempGamestate = new GameState(currentLevel);
                 byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
-
                 tempGamestateTwoD[i][0] -= 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
+
                 if(board.validateBoard(tempGamestate.state ) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -293,9 +293,9 @@ class Main {
 
                 GameState tempGamestate = new GameState(currentLevel);
                 byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
-
                 tempGamestateTwoD[i][1] -= 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
+
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -309,9 +309,9 @@ class Main {
 
                 GameState tempGamestate = new GameState(currentLevel);
                 byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
-
                 tempGamestateTwoD[i][1] += 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
+
                 if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
@@ -321,34 +321,6 @@ class Main {
                 }
             }
 
-
-
-//            System.out.println("plusY");
-//            for (int i = 0; i < currentLevel.state.length; i++) {
-//
-//                GameState tempGamestate = new GameState(currentLevel);
-//                tempGamestate.state[i].y += 1;
-//                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
-//                {
-//                    todo.add(tempGamestate);
-//                    seenIt.add(tempGamestate);
-//                    log("Push:" + tempGamestate.printState());
-//
-//                }
-//            }
-//
-//            for (int i = 0; i < currentLevel.state.length; i++) {
-//
-//                GameState tempGamestate = new GameState(currentLevel);
-//                tempGamestate.state[i].y -= 1;
-//                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
-//                {
-//                    todo.add(tempGamestate);
-//                    seenIt.add(tempGamestate);
-//                    log("Push:" + tempGamestate.printState());
-//
-//                }
-//            }
             seenIt.add(currentLevel);
 
             log(String.valueOf(seenIt.size()));

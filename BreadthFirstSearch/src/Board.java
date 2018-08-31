@@ -55,12 +55,12 @@ public class Board
 
                         if(this.boardState[x + PosX][ y +  PosY])
                         {
-                            printBoard();
+//                            printBoard();
                             return false;
 
                         }
                         else{
-                            printBoard();
+//                            printBoard();
                             this.boardState[x + PosX][ y +  PosY] = true;
                         }
                 }
@@ -115,6 +115,8 @@ public class Board
             }
             System.out.println("");
         }
+        System.out.println("");
+
     }
 
     public void wipeBoard()
@@ -158,7 +160,7 @@ public class Board
         ArrayList<Shape> tempShape = new ArrayList<>();
         //generate the shapes initial positions
 //        Position tempPosition;
-        Shape zero = new Shape((byte)1,(byte)3,(byte)2,(byte)3,(byte)1,(byte)4);
+        Shape zero = new Shape((byte)1,(byte)3,(byte)2,(byte)3,(byte)1,(byte)4,(byte)2,(byte)4);
 //        tempPosition = new Position(1, 3);
 //        zero.innerPieceList.add(tempPosition);
 //        tempPosition = new Position(2, 3);
