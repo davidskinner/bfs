@@ -8,11 +8,11 @@ public class Board
     }
 
 
-    public boolean validateBoard(byte[] positions)
+    public boolean validateBoard(byte[][] positions)
     {
         this.wipeBoard();
 
-        byte[][] positionsTwoD = Main.makeXy(positions);
+//        byte[][] positionsTwoD = Main.makeXy(positions);
 
         int x;
         int y;
@@ -21,8 +21,8 @@ public class Board
         //loop through every piece as long as piece doesn't move invalid
         for (int i = 0; i < 11; i++) {
 
-            int PosX = positionsTwoD[i][0];
-            int PosY = positionsTwoD[i][1];
+            int PosX = positions[i][0];
+            int PosY = positions[i][1];
 
             //move every inner piece in the offset direction, if an inner piece makes an invalid move..jump out of loop for pie
                 for (int j = 0; j < shapeList[i].innerArray.length/2; j++) {

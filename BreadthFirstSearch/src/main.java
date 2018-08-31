@@ -86,7 +86,7 @@ class GameState {
 
     GameState prev;
 
-    byte[] state = new byte[22];
+    byte[] statec = new byte[22];
 
     byte[][] state2 = new byte[11][2];
 
@@ -100,26 +100,24 @@ class GameState {
 
         prev = _prev;
 
-        state = new byte[22];
-        for (int i = 0; i < 22; i++) {
-            byte tempPosition;
-            tempPosition = _prev.state[i];
-            state[i] = tempPosition;
-        }
+//        state = new byte[22];
+//        for (int i = 0; i < 22; i++) {
+//            byte tempPosition;
+//            tempPosition = _prev.state[i];
+//            state[i] = tempPosition;
+//        }
 
         state2 = new byte[11][2];
-        int q =0;
         for (int i = 0; i < 11; i++) {
             for (int j = 0; j < 2; j++) {
-                state2[i][j] = _prev.state[q];
-                q++;
+                state2[i][j] = _prev.state2[i][j];
             }
         }
     }
 
-    public void setState(byte[] currentState)
+    public void setState(byte[][] currentState)
     {
-        state = currentState;
+        state2 = currentState;
     }
 
     public String printState()
@@ -145,11 +143,14 @@ class StateComparator implements Comparator<GameState> {
 
     public int compare(GameState a, GameState b)
     {
-        for(int i = 0; i < a.state.length; i ++)
+            a.statec = Main.to1D(a.state2);
+            b.statec = Main.to1D(b.state2);
+
+        for(int i = 0; i < a.statec.length; i ++)
         {
-            if(a.state[i] < b.state[i])
+            if(a.statec[i] < b.statec[i])
                 return -1;
-            else if(a.state[i] > b.state[i] )
+            else if(a.statec[i] > b.statec[i] )
                 return 1;
         }
         return 0;
@@ -194,12 +195,12 @@ class Main {
     static boolean applyOffset(byte[] position)
     {
 //        return position.x == 4 && position.y == -2;
-        return position[0] == 2 && position[1] == 2;
+        return position[0] == 0 && position[1] == 2;
     }
 
     static void log(String message)
     {
-       System.out.println(message);
+//       System.out.println(message);
     }
 
     static void innerTime(String message)
@@ -212,8 +213,9 @@ class Main {
         final String initialString = "(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)";
 
         //create initial position
-        byte[] initialPosition = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        byte[] temp = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
+        byte[][] initialPosition = makeXy(temp);
 //        for (int i = 0; i < 11; i++) {
 //            initialPosition.add(new Position(0, 0));
 //        }
@@ -257,7 +259,7 @@ class Main {
             log("Pop:" + currentLevel.printState());
 
             //check if current level is the goal
-            if(applyOffset(currentLevel.state))
+            if(applyOffset(to1D(currentLevel.state2)))
             {
                 currentLevel.printState();
                 break;
@@ -271,12 +273,10 @@ class Main {
 
                 tempGamestate = new GameState(currentLevel);
                 tempGamestate.state2[i][0] += 1;
-                tempGamestate.state = to1D(tempGamestate.state2);
-//                log(tempGamestate.state.toString());
 
-                if(board.validateBoard(to1D(tempGamestate.state2) ) && !seenIt.contains(tempGamestate))
+                if(board.validateBoard(tempGamestate.state2 ) && !seenIt.contains(tempGamestate))
                 {
-                    tempGamestate.state = to1D(tempGamestate.state2);
+//                    tempGamestate.statec = to1D(tempGamestate.state2);
 
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
@@ -287,11 +287,9 @@ class Main {
             for (int i = 0; i < 11; i++) {
 
                 tempGamestate = new GameState(currentLevel);
-                tempGamestateTwoD = makeXy((tempGamestate.state));
-                tempGamestateTwoD[i][0] -= 1;
-                tempGamestate.state = to1D(tempGamestateTwoD);
+                tempGamestate.state2[i][0] -= 1;
 
-                if(board.validateBoard(tempGamestate.state ) && !seenIt.contains(tempGamestate))
+                if(board.validateBoard(tempGamestate.state2 ) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
@@ -302,11 +300,9 @@ class Main {
             for (int i = 0; i < 11; i++) {
 
                 tempGamestate = new GameState(currentLevel);
-                tempGamestateTwoD = makeXy((tempGamestate.state));
-                tempGamestateTwoD[i][1] -= 1;
-                tempGamestate.state = to1D(tempGamestateTwoD);
+                tempGamestate.state2[i][1] += 1;
 
-                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                if(board.validateBoard(tempGamestate.state2) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
@@ -318,11 +314,9 @@ class Main {
             for (int i = 0; i < 11; i++) {
 
                 tempGamestate = new GameState(currentLevel);
-                tempGamestateTwoD = makeXy((tempGamestate.state));
-                tempGamestateTwoD[i][1] += 1;
-                tempGamestate.state = to1D(tempGamestateTwoD);
+                tempGamestate.state2[i][1] -= 1;
 
-                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                if(board.validateBoard(tempGamestate.state2) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
@@ -350,17 +344,17 @@ class Main {
         ZonedDateTime later = ZonedDateTime.now();
         System.out.println(later.toLocalDateTime().toString());
 
-        LinkedList<GameState> temp = new LinkedList<>();
-        temp.add(currentLevel);
+        LinkedList<GameState> temps = new LinkedList<>();
+        temps.add(currentLevel);
         while(currentLevel.prev != null)
         {
 //            System.out.println(currentLevel.printState());
             currentLevel = currentLevel.prev;
-            temp.add(currentLevel);
+            temps.add(currentLevel);
 
         }
 
-        Iterator x = temp.descendingIterator();
+        Iterator x = temps.descendingIterator();
 
         while(x.hasNext())
         {
