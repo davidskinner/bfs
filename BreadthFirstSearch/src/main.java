@@ -1,7 +1,7 @@
-import javafx.geometry.Pos;
-
-import java.lang.reflect.Array;
+import java.time.ZonedDateTime;
 import java.util.*;
+
+
 
 class Position {
     byte x;
@@ -190,7 +190,7 @@ class Main {
     static boolean applyOffset(byte[] position)
     {
 //        return position.x == 4 && position.y == -2;
-        return position[0] == 4 && position[1] == 0;
+        return position[0] == 0 && position[1] == 1;
     }
 
     static void log(String message)
@@ -217,17 +217,8 @@ class Main {
 
         GameState initialGameState = new GameState();
 
-
-
-
         //get state of every shape to start with
         initialGameState.setState(initialPosition);
-
-//        if (!initialGameState.printState().equals(initialString)) {
-//            System.out.println(initialGameState.printState());
-//            System.out.println(initialString);
-//            throw new RuntimeException("initial string is wrong");
-//        }
 
         StateComparator gameStateComparator = new StateComparator();
         TreeSet<GameState> seenIt= new TreeSet<>(gameStateComparator);
@@ -245,6 +236,11 @@ class Main {
         boolean xDirection;
         boolean yDirection;
         //while the queue is empty:
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        System.out.println(now.toLocalDateTime().toString());
+
+
         while(!todo.isEmpty())
         {
             currentLevel = todo.poll();
@@ -257,12 +253,12 @@ class Main {
                 break;
             }
 
-            byte[][] currentStateTwoD = makeXy(currentLevel.state);
+            byte[][] tempGamestateTwoD;
 
             for (int i = 0; i < 11; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
+                tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][0] += 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
 
@@ -274,10 +270,10 @@ class Main {
                 }
             }
 
-            for (int i = 0; i < currentStateTwoD.length; i++) {
+            for (int i = 0; i < 11; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
+                tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][0] -= 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
 
@@ -289,10 +285,10 @@ class Main {
                 }
             }
 
-            for (int i = 0; i < currentStateTwoD.length; i++) {
+            for (int i = 0; i < 11; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
+                tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][1] -= 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
 
@@ -305,10 +301,10 @@ class Main {
                 }
             }
 
-            for (int i = 0; i < currentStateTwoD.length; i++) {
+            for (int i = 0; i < 11; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                byte[][] tempGamestateTwoD = makeXy(tempGamestate.state);
+                tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][1] += 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
 
@@ -326,6 +322,15 @@ class Main {
             log(String.valueOf(seenIt.size()));
         }
 
+        Iterator xs = seenIt.iterator();
+        while(xs.hasNext()){
+            GameState element = (GameState)xs.next();
+            System.out.println(element.printState());
+        }
+        log("");
+
+        ZonedDateTime later = ZonedDateTime.now();
+        System.out.println(later.toLocalDateTime().toString());
 
         LinkedList<GameState> temp = new LinkedList<>();
         temp.add(currentLevel);
