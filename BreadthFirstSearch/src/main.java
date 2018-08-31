@@ -88,6 +88,8 @@ class GameState {
 
     byte[] state = new byte[22];
 
+    byte[][] state2 = new byte[11][2];
+
     GameState()
     {
 
@@ -97,6 +99,7 @@ class GameState {
 
 
         prev = _prev;
+
         state = new byte[22];
         for (int i = 0; i < 22; i++) {
             byte tempPosition;
@@ -104,6 +107,14 @@ class GameState {
             state[i] = tempPosition;
         }
 
+        state2 = new byte[11][2];
+        int q =0;
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < 2; j++) {
+                state2[i][j] = _prev.state[q];
+                q++;
+            }
+        }
     }
 
     public void setState(byte[] currentState)
@@ -113,7 +124,7 @@ class GameState {
 
     public String printState()
     {
-        byte[][] twoD = Main.makeXy(state);
+        byte[][] twoD = state2;
         StringBuilder stringBuilder = new StringBuilder();
         String tempString = "";
         for (int i = 0; i < twoD.length; i++) {
@@ -128,13 +139,6 @@ class GameState {
         tempString = stringBuilder.toString();
         return tempString;
     }
-}
-
-
-
-enum Direction
-{
-    up,down,left,right
 }
 
 class StateComparator implements Comparator<GameState> {
@@ -195,7 +199,12 @@ class Main {
 
     static void log(String message)
     {
-//       System.out.println(message);
+       System.out.println(message);
+    }
+
+    static void innerTime(String message)
+    {
+        System.out.println(message);
     }
 
     public static void main(String args[]) {
@@ -242,6 +251,8 @@ class Main {
 
         while(!todo.isEmpty())
         {
+//            final ZonedDateTime nowInner = ZonedDateTime.now();
+
             currentLevel = todo.poll();
             log("Pop:" + currentLevel.printState());
 
@@ -254,15 +265,19 @@ class Main {
 
             byte[][] tempGamestateTwoD;
 
+            GameState tempGamestate;
+
             for (int i = 0; i < 11; i++) {
 
-                GameState tempGamestate = new GameState(currentLevel);
-                tempGamestateTwoD = makeXy((tempGamestate.state));
-                tempGamestateTwoD[i][0] += 1;
-                tempGamestate.state = to1D(tempGamestateTwoD);
+                tempGamestate = new GameState(currentLevel);
+                tempGamestate.state2[i][0] += 1;
+                tempGamestate.state = to1D(tempGamestate.state2);
+//                log(tempGamestate.state.toString());
 
-                if(board.validateBoard(tempGamestate.state ) && !seenIt.contains(tempGamestate))
+                if(board.validateBoard(to1D(tempGamestate.state2) ) && !seenIt.contains(tempGamestate))
                 {
+                    tempGamestate.state = to1D(tempGamestate.state2);
+
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
                     log("Push:" + tempGamestate.printState());
@@ -271,7 +286,7 @@ class Main {
 
             for (int i = 0; i < 11; i++) {
 
-                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate = new GameState(currentLevel);
                 tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][0] -= 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
@@ -286,7 +301,7 @@ class Main {
 
             for (int i = 0; i < 11; i++) {
 
-                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate = new GameState(currentLevel);
                 tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][1] -= 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
@@ -302,7 +317,7 @@ class Main {
 
             for (int i = 0; i < 11; i++) {
 
-                GameState tempGamestate = new GameState(currentLevel);
+                tempGamestate = new GameState(currentLevel);
                 tempGamestateTwoD = makeXy((tempGamestate.state));
                 tempGamestateTwoD[i][1] += 1;
                 tempGamestate.state = to1D(tempGamestateTwoD);
@@ -319,6 +334,10 @@ class Main {
             seenIt.add(currentLevel);
 
             log(String.valueOf(seenIt.size()));
+//            final ZonedDateTime nowEnd = ZonedDateTime.now();
+//            innerTime(nowInner.toLocalDateTime().toString() + "  " + nowEnd.toLocalDateTime().toString());
+
+
         }
 
 //        Iterator xs = seenIt.iterator();

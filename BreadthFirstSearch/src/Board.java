@@ -24,7 +24,7 @@ public class Board
             int PosX = positionsTwoD[i][0];
             int PosY = positionsTwoD[i][1];
 
-            //move every inner piece in the offset direction, if an inner piece makes an invalid move..jump out of loop for Shape
+            //move every inner piece in the offset direction, if an inner piece makes an invalid move..jump out of loop for pie
                 for (int j = 0; j < shapeList[i].innerArray.length/2; j++) {
 
                     if(shapeList[i].innerArray.length/2 == 3)
