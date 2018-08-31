@@ -11,32 +11,73 @@ class Position {
 
     }
 
-    Position(int xd, int yd) {
-        x = (byte)xd;
-        y = (byte)yd;
-    }
-
-    @Override
-    public String toString() {
-        return "(" + String.valueOf(x) + "," + String.valueOf(y) +  ")";
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
+//    Position(int xd, int yd) {
+//        x = (byte)xd;
+//        y = (byte)yd;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "(" + String.valueOf(x) + "," + String.valueOf(y) +  ")";
+//    }
+//
+//    public int getX() {
+//        return x;
+//    }
+//
+//    public int getY() {
+//        return y;
+//    }
+//
+//    public byte[] convertToByteArray()
+//    {
+//        byte[] temp = new byte[2];
+//        temp[0] = x;
+//        temp[1] = y;
+//        return temp;
+//    }
 
 }
 
 class Shape {
     byte x = 0;
     byte y = 0;
-    Position relativePosition = new Position(x, y);
+    byte[] relativePosition = new byte[]{x,y};
+
 
     ArrayList<Position> innerPieceList = new ArrayList<Position>();
+    //make an arraylist of positions
+    byte[] innerArray;
+
+    //for shapes made of three pieces
+    Shape( byte xx, byte yy, byte xxx, byte yyy, byte xxxx, byte yyyy)
+    {
+
+        innerArray = new byte[6];
+        innerArray[0] = xx;
+        innerArray[1] = yy;
+        innerArray[2] = xxx;
+        innerArray[3] = yyy;
+        innerArray[4] = xxxx;
+        innerArray[5] = yyyy;
+    }
+
+    //for shapes with 4
+    Shape(byte x, byte y, byte xx, byte yy, byte xxx, byte yyy, byte xxxx, byte yyyy)
+    {
+
+        innerArray = new byte[8];
+        innerArray[0] = x;
+        innerArray[1] = y;
+        innerArray[2] = xx;
+        innerArray[3] = yy;
+        innerArray[4] = xxx;
+        innerArray[5] = yyy;
+        innerArray[6] = xxxx;
+        innerArray[7] = yyyy;
+
+    }
+
 
 }
 
@@ -45,7 +86,7 @@ class GameState {
 
     GameState prev;
 
-    Position[] state = new Position[11];
+    byte[] state = new byte[22];
 
     GameState()
     {
@@ -56,24 +97,26 @@ class GameState {
 
 
         prev = _prev;
-        state = new Position[11];
+        state = new byte[22];
         for (int i = 0; i < 11; i++) {
-            Position tempPosition = new Position(_prev.state[i].x,_prev.state[i].y);
+            byte tempPosition;
+            tempPosition = _prev.state[i];
             state[i] = tempPosition;
         }
 
     }
 
-    public void setState(Position[] currentState)
+    public void setState(byte[] currentState)
     {
         state = currentState;
     }
 
     public String printState()
     {
+        StringBuilder stringBuilder = new StringBuilder();
         String tempString = "";
-        for (Position aState : state) {
-            tempString = tempString + aState.toString();
+        for (byte aState : state) {
+            stringBuilder.append(String.valueOf(aState));
         }
         return tempString;
     }
@@ -86,15 +129,15 @@ enum Direction
     up,down,left,right
 }
 
-class GameStateComparator implements Comparator<GameState> {
+class StateComparator implements Comparator<GameState> {
 
     public int compare(GameState a, GameState b)
     {
         for(int i = 0; i < a.state.length; i ++)
         {
-            if(a.state[i].x < b.state[i].x || a.state[i].y < b.state[i].y)
+            if(a.state[i] < b.state[i])
                 return -1;
-            else if(a.state[i].x > b.state[i].x || a.state[i].y > b.state[i].y)
+            else if(a.state[i] > b.state[i] )
                 return 1;
         }
         return 0;
@@ -104,15 +147,15 @@ class GameStateComparator implements Comparator<GameState> {
 
 class Main {
 
-    static boolean applyOffset(Position position)
+    static boolean applyOffset(byte[] position)
     {
 //        return position.x == 4 && position.y == -2;
-        return position.x == 4 && position.y == 0;
+        return position[0] == 2 && position[1] == 0;
     }
 
     static void log(String message)
     {
-//       System.out.println(message);
+       System.out.println(message);
     }
 
     public static void main(String args[]) {
@@ -120,11 +163,11 @@ class Main {
         final String initialString = "(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)(0,0)";
 
         //create initial position
-        ArrayList<Position> initialPosition = new ArrayList<>(11);
+        byte[] initialPosition = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-        for (int i = 0; i < 11; i++) {
-            initialPosition.add(new Position(0, 0));
-        }
+//        for (int i = 0; i < 11; i++) {
+//            initialPosition.add(new Position(0, 0));
+//        }
 
         Board board = new Board();
         board.wipeBoard();
@@ -134,21 +177,19 @@ class Main {
 
         GameState initialGameState = new GameState();
 
-        Position[] tempPosition = new Position[11];
-        for (int i = 0; i < 11; i++) {
-             tempPosition[i] = (new Position(0,0));
-        }
+
+
 
         //get state of every shape to start with
-        initialGameState.setState(tempPosition);
+        initialGameState.setState(initialPosition);
 
-        if (!initialGameState.printState().equals(initialString)) {
-            System.out.println(initialGameState.printState());
-            System.out.println(initialString);
-            throw new RuntimeException("initial string is wrong");
-        }
+//        if (!initialGameState.printState().equals(initialString)) {
+//            System.out.println(initialGameState.printState());
+//            System.out.println(initialString);
+//            throw new RuntimeException("initial string is wrong");
+//        }
 
-        GameStateComparator gameStateComparator = new GameStateComparator();
+        StateComparator gameStateComparator = new StateComparator();
         TreeSet<GameState> seenIt= new TreeSet<>(gameStateComparator);
         Queue<GameState> todo = new LinkedList<>(); //FIFO counter
 
@@ -161,39 +202,48 @@ class Main {
 
         GameState currentLevel = new GameState();
 
+        boolean xDirection;
+        boolean yDirection;
         //while the queue is empty:
         while(!todo.isEmpty())
         {
+            xDirection = false;
             currentLevel = todo.poll();
             log("Pop:" + currentLevel.printState());
 
-
             //check if current level is the goal
-            if(applyOffset(currentLevel.state[0]))
+            if(applyOffset(currentLevel.state))
             {
                 currentLevel.printState();
                 break;
             }
 
-            //            System.out.println("plusX");
+
             for (int i = 0; i < currentLevel.state.length; i++) {
 
+                xDirection = false;
+
+                if(i % 2 == 0)
+                {
+                    log("you are at an x");
+                    xDirection = true;
+                }
+
                 GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state[i].x += 1;
-                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                tempGamestate.state[i] += 1;
+                if(board.validateBoard(tempGamestate.state,  xDirection ) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
                     log("Push:" + tempGamestate.printState());
                 }
-
             }
 
             for (int i = 0; i < currentLevel.state.length; i++) {
 
                 GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state[i].x -= 1;
-                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+                tempGamestate.state[i] -= 1;
+                if(board.validateBoard(tempGamestate.state, xDirection) && !seenIt.contains(tempGamestate))
                 {
                     todo.add(tempGamestate);
                     seenIt.add(tempGamestate);
@@ -205,31 +255,31 @@ class Main {
 
 
 //            System.out.println("plusY");
-            for (int i = 0; i < currentLevel.state.length; i++) {
-
-                GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state[i].y += 1;
-                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
-                {
-                    todo.add(tempGamestate);
-                    seenIt.add(tempGamestate);
-                    log("Push:" + tempGamestate.printState());
-
-                }
-            }
-
-            for (int i = 0; i < currentLevel.state.length; i++) {
-
-                GameState tempGamestate = new GameState(currentLevel);
-                tempGamestate.state[i].y -= 1;
-                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
-                {
-                    todo.add(tempGamestate);
-                    seenIt.add(tempGamestate);
-                    log("Push:" + tempGamestate.printState());
-
-                }
-            }
+//            for (int i = 0; i < currentLevel.state.length; i++) {
+//
+//                GameState tempGamestate = new GameState(currentLevel);
+//                tempGamestate.state[i].y += 1;
+//                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+//                {
+//                    todo.add(tempGamestate);
+//                    seenIt.add(tempGamestate);
+//                    log("Push:" + tempGamestate.printState());
+//
+//                }
+//            }
+//
+//            for (int i = 0; i < currentLevel.state.length; i++) {
+//
+//                GameState tempGamestate = new GameState(currentLevel);
+//                tempGamestate.state[i].y -= 1;
+//                if(board.validateBoard(tempGamestate.state) && !seenIt.contains(tempGamestate))
+//                {
+//                    todo.add(tempGamestate);
+//                    seenIt.add(tempGamestate);
+//                    log("Push:" + tempGamestate.printState());
+//
+//                }
+//            }
             seenIt.add(currentLevel);
 
             log(String.valueOf(seenIt.size()));
