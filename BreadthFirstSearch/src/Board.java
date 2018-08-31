@@ -18,33 +18,42 @@ public class Board
 //    int innerPieceY = shapeList.get(i).innerPieceList.get(j).getY();
 //    int currentLevelOffsetY = positions.get(i).getY();
 
-    public boolean validateBoard(byte[] positions, boolean xDirection)
+    public boolean validateBoard(byte[] positions)
     {
         this.wipeBoard();
 
-        byte[][] positionsTwoD = makeXy(positions);
+        byte[][] positionsTwoD = Main.makeXy(positions);
 
 
         //loop through every piece
-        for (int i = 0; i < shapeList.size(); i++) {
+        for (int i = 0; i < positionsTwoD.length; i++) {
 
             int x;
             int y;
-            int shape;
+            int PosX = positionsTwoD[i][0];
+            int PosY = positionsTwoD[i][1];
+            byte[][]shapeListTwoD;
 
             //move every inner piece in the offset direction
-                for (int j = 0; j < shapeList.get(i).innerArray.length; j++) {
+                for (int j = 0; j < shapeList.get(i).innerArray.length/2; j++) {
 
 
-
-                    byte[][] shapeListTwoD = makeXy(shapeList.get(i).innerArray);
-
-                    
-                    shape = shapeList.get(i).innerArray[j];
-
-                    if(xDirection && j % 2 == 0)
+                    if(shapeList.get(i).innerArray.length/2 == 3)
                     {
-                        if(this.boardState[shape + positions[i]][ shape +  positions[i]])
+                         shapeListTwoD = makeXy3(shapeList.get(i).innerArray);
+                    }
+                    else
+                    {
+                         shapeListTwoD = makeXy4(shapeList.get(i).innerArray);
+
+                    }
+
+
+                    x = shapeListTwoD[j][0];
+                    y = shapeListTwoD[j][1];
+
+
+                        if(this.boardState[x + PosX][ y +  PosY])
                         {
                             printBoard();
                             return false;
@@ -52,39 +61,22 @@ public class Board
                         }
                         else{
                             printBoard();
-                            this.boardState[shape + positions[i]][ shape + positions[i]] = true;
+                            this.boardState[x + PosX][ y +  PosY] = true;
                         }
-                    }
-                    else
-                    {
-                    }
                 }
             }
             this.wipeBoard();
             return true;
     }
 
-    public byte[][] makeXy(byte[] positions)
-    {
-         byte[][] temp = new byte[11][2];
 
-        int q =0;
-        for (int i = 0; i < 11; i++) {
-            for (int j = 0; j < 2; j++) {
-                temp[i][j] = positions[q];
-                q++;
-
-            }
-        }
-            return temp;
-        }
 
     public byte[][] makeXy3 (byte[] positions)
     {
         byte[][] temp = new byte[6][2];
 
         int q =0;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
                 temp[i][j] = positions[q];
                 q++;
@@ -96,10 +88,10 @@ public class Board
 
     public byte[][] makeXy4 (byte[] positions)
     {
-        byte[][] temp = new byte[6][2];
+        byte[][] temp = new byte[8][2];
 
         int q =0;
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 2; j++) {
                 temp[i][j] = positions[q];
                 q++;
