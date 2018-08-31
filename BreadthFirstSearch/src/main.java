@@ -190,7 +190,7 @@ class Main {
     static boolean applyOffset(byte[] position)
     {
 //        return position.x == 4 && position.y == -2;
-        return position[0] == 0 && position[1] == 1;
+        return position[0] == 2 && position[1] == 2;
     }
 
     static void log(String message)
@@ -213,7 +213,6 @@ class Main {
         board.wipeBoard();
         board.initializeShapes();
         board.printBoard();
-
 
         GameState initialGameState = new GameState();
 
@@ -322,12 +321,12 @@ class Main {
             log(String.valueOf(seenIt.size()));
         }
 
-        Iterator xs = seenIt.iterator();
-        while(xs.hasNext()){
-            GameState element = (GameState)xs.next();
-            System.out.println(element.printState());
-        }
-        log("");
+//        Iterator xs = seenIt.iterator();
+//        while(xs.hasNext()){
+//            GameState element = (GameState)xs.next();
+//            System.out.println(element.printState());
+//        }
+//        log("");
 
         ZonedDateTime later = ZonedDateTime.now();
         System.out.println(later.toLocalDateTime().toString());

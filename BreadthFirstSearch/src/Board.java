@@ -1,14 +1,12 @@
-import java.util.ArrayList;
-
 public class Board
 {
     boolean boardState[][] = new boolean[10][10];
-    ArrayList<Shape> shapeList = new ArrayList<>();
+    Shape[] shapeList = new Shape[11];
 
     Board()
     {
     }
-    
+
 
     public boolean validateBoard(byte[] positions)
     {
@@ -20,22 +18,22 @@ public class Board
         int y;
         byte[][]shapeListTwoD;
 
-        //loop through every piece
+        //loop through every piece as long as piece doesn't move invalid
         for (int i = 0; i < 11; i++) {
 
             int PosX = positionsTwoD[i][0];
             int PosY = positionsTwoD[i][1];
 
-            //move every inner piece in the offset direction
-                for (int j = 0; j < shapeList.get(i).innerArray.length/2; j++) {
+            //move every inner piece in the offset direction, if an inner piece makes an invalid move..jump out of loop for Shape
+                for (int j = 0; j < shapeList[i].innerArray.length/2; j++) {
 
-                    if(shapeList.get(i).innerArray.length/2 == 3)
+                    if(shapeList[i].innerArray.length/2 == 3)
                     {
-                         shapeListTwoD = makeXy3(shapeList.get(i).innerArray);
+                         shapeListTwoD = makeXy3(shapeList[i].innerArray);
                     }
                     else
                     {
-                         shapeListTwoD = makeXy4(shapeList.get(i).innerArray);
+                         shapeListTwoD = makeXy4(shapeList[i].innerArray);
                     }
 
                     x = shapeListTwoD[j][0];
@@ -44,12 +42,12 @@ public class Board
 
                         if(this.boardState[x + PosX][ y + PosY])
                         {
-//                            printBoard();
+//                           printBoard();
                             return false;
 
                         }
                         else{
-//                            printBoard();
+//                           printBoard();
                             this.boardState[x + PosX][ y + PosY] = true;
                         }
                 }
@@ -144,39 +142,39 @@ public class Board
 
     public void initializeShapes()
     {
-        ArrayList<Shape> tempShape = new ArrayList<>();
+        Shape[] tempShape = new Shape[11];
         Shape zero = new Shape((byte)1,(byte)3,(byte)2,(byte)3,(byte)1,(byte)4,(byte)2,(byte)4);
-        tempShape.add(zero);
+        tempShape[0] =zero;
 
         Shape one = new Shape((byte)1,(byte)5,(byte)1,(byte)6, (byte)2,(byte)6);
-        tempShape.add(one);
+        tempShape[1] = (one);
 
         Shape two = new Shape((byte)2, (byte)5, (byte)3, (byte)5, (byte)3, (byte)6);
-        tempShape.add(two);
+        tempShape[2] = (two);
 
         Shape three = new Shape((byte)3,(byte)7,(byte)3,(byte)8,(byte)4,(byte)8);
-        tempShape.add(three);
+        tempShape[3] =(three);
 
         Shape four = new Shape((byte)4,(byte)7,(byte)5,(byte)7,(byte)5,(byte)8);
-        tempShape.add(four);
+        tempShape[4] = (four);
 
         Shape five = new Shape((byte)6,(byte)7,(byte)7,(byte)7,(byte)6,(byte)8);
-        tempShape.add(five);
+        tempShape[5] = (five);
 
         Shape six = new Shape((byte)5,(byte)4,(byte)5,(byte)5,(byte)5,(byte)6,(byte)4,(byte)5);
-        tempShape.add(six);
+        tempShape[6] = (six);
 
         Shape seven = new Shape((byte)6,(byte)4,(byte)6,(byte)5,(byte)6,(byte)6,(byte)7,(byte)5);
-        tempShape.add(seven);
+        tempShape[7] = (seven);
 
         Shape eight = new Shape((byte)8,(byte)5,(byte)8,(byte)6,(byte)7,(byte)6);
-        tempShape.add(eight);
+        tempShape[8] = (eight);
 
         Shape nine = new Shape((byte)6,(byte)2,(byte)6,(byte)3,(byte)5,(byte)3);
-        tempShape.add(nine);
+        tempShape[9] = (nine);
 
         Shape ten = new Shape((byte)5,(byte)1,(byte)6,(byte)1,(byte)5,(byte)2);
-        tempShape.add(ten);
+        tempShape[10] = (ten);
 
         this.shapeList = tempShape;
     }
